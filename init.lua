@@ -71,24 +71,7 @@ function plugin:onParseValues(data, extra)
   end
   local stats = parseJson(data)
   if stats then
-    local handled = stats['connections']['accepted'] - stats['connections']['dropped']
-    local requests = stats['requests']['total']
-    local reqs_per_connection = (handled > 0) and requests / handled or 0
-
-    metrics['NGINX_ACTIVE_CONNECTIONS'] = stats['connections']['active'] + stats['connections']['idle']
-    metrics['NGINX_WAITING'] = stats['connections']['idle']
-    metrics['NGINX_HANDLED'] = acc:accumulate('handled', handled)
-    metrics['NGINX_NOT_HANDLED'] = stats['connections']['dropped']
-    metrics['NGINX_REQUESTS'] = acc:accumulate('requests', requests)
-    metrics['NGINX_REQUESTS_PER_CONNECTION'] = reqs_per_connection
-    -- Enterprise customers have 'per zone' statistics
-    for zone_name, zone in pairs(stats.server_zones) do
-        local src = self.source .. '.' .. zone_name
-        table.insert(metrics, pack('NGINX_REQUESTS', acc:accumulate('requests_' .. zone_name, zone['requests']), nil, src))
-        table.insert(metrics, pack('NGINX_RESPONSES', acc:accumulate('responses_' .. zone_name, zone['responses']['total']), nil, src))
-        table.insert(metrics, pack('NGINX_TRAFFIC_SENT', acc:accumulate('traffic_sent_' .. zone_name, zone['sent']), nil, src))
-        table.insert(metrics, pack('NGINX_TRAFFIC_RECEIVED', acc:accumulate('traffic_received_' .. zone_name, zone['received']), nil, src))
-    end
+    self:emitEvent('info', 'You should install NGINX+ Plugin for non-free version of NGINX.')
   else 
     stats = parseText(data)
     local handled = acc:accumulate('handled', stats.handled)
