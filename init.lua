@@ -22,6 +22,7 @@ local Accumulator = framework.Accumulator
 local auth = framework.util.auth
 local gsplit = framework.string.gsplit
 local pack = framework.util.pack
+local isHttpSuccess = framework.util.isHttpSuccess
 
 local params = framework.params
 
@@ -61,9 +62,13 @@ local function parseJson(body)
     return parsed 
 end
 
-function plugin:onParseValues(data)
+function plugin:onParseValues(data, extra)
   local metrics = {}
 
+  if not isHttpSuccess(extra.status_code) then
+    self:emitEvent('error', ('HTTP Request returned %d instead of OK. Please check NGINX Free stats endpoint.'):format(extra.status_code))
+    return
+  end
   local stats = parseJson(data)
   if stats then
     local handled = stats['connections']['accepted'] - stats['connections']['dropped']
