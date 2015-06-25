@@ -2,7 +2,7 @@
     "name": "Boundary NGINX Free plugin",
     "version" : "0.9.1",
     "meterVersionRequired" : "4.2.0-611",
-    "os" : [ "Linux", "Windows", "SmartOS", "OS X" ],
+    "unsupportedPlatforms" : [ ],
     "tags": "nginx-free",
     "description": "Boundary Nginx Plugin - Displays NGINX Free metrics",
     "icon" : "icon.png",
@@ -34,7 +34,7 @@
     ],
     "paramSchema" : [
         {
-           "title" : "Poll Interval",
+            "title" : "Poll Interval (ms)",
             "name" : "pollInterval",
             "description" : "The Poll Interval in milliseconds. Ex. 1000",
             "type" : "integer",
