@@ -15,13 +15,11 @@
 local framework = require('framework')
 local json = require('json')
 local url = require('url')
-local table = require('table')
 local Plugin  = framework.Plugin
 local WebRequestDataSource = framework.WebRequestDataSource
 local Accumulator = framework.Accumulator
 local auth = framework.util.auth
 local gsplit = framework.string.gsplit
-local pack = framework.util.pack
 local isHttpSuccess = framework.util.isHttpSuccess
 
 local params = framework.params
