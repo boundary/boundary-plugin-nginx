@@ -72,18 +72,23 @@ function plugin:onParseValues(data, extra)
     self:emitEvent('info', 'You should install NGINX+ Plugin for non-free version of NGINX.')
   else 
     stats = parseText(data)
-    local handled = acc:accumulate('handled', stats.handled)
-    local requests = acc:accumulate('requests', stats.requests)
-    local reqs_per_connection = (handled > 0) and requests / handled or 0
+    local function prepare ()
+      local handled = acc:accumulate('handled', stats.handled)
+      local requests = acc:accumulate('requests', stats.requests)
+      local reqs_per_connection = (handled > 0) and requests / handled or 0
 
-    metrics['NGINX_ACTIVE_CONNECTIONS'] = stats.connections
-    metrics['NGINX_READING'] = stats.reading
-    metrics['NGINX_WRITING'] = stats.writing
-    metrics['NGINX_WAITING'] = stats.waiting
-    metrics['NGINX_HANDLED'] = handled
-    metrics['NGINX_NOT_HANDLED'] = stats.not_handled
-    metrics['NGINX_REQUESTS'] = requests
-    metrics['NGINX_REQUESTS_PER_CONNECTION'] = reqs_per_connection
+      metrics['NGINX_ACTIVE_CONNECTIONS'] = stats.connections
+      metrics['NGINX_READING'] = stats.reading
+      metrics['NGINX_WRITING'] = stats.writing
+      metrics['NGINX_WAITING'] = stats.waiting
+      metrics['NGINX_HANDLED'] = handled
+      metrics['NGINX_NOT_HANDLED'] = stats.not_handled
+      metrics['NGINX_REQUESTS'] = requests
+      metrics['NGINX_REQUESTS_PER_CONNECTION'] = reqs_per_connection
+    end
+    if not pcall(prepare) then
+      self:emitEvent('error', 'Can not parse metrics. Please check NGINX Free stats endpoint.')  
+    end
   end
 
   return metrics 
