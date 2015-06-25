@@ -15,13 +15,12 @@
 local framework = require('framework')
 local json = require('json')
 local url = require('url')
-local table = require('table')
 local Plugin  = framework.Plugin
 local WebRequestDataSource = framework.WebRequestDataSource
 local Accumulator = framework.Accumulator
 local auth = framework.util.auth
 local gsplit = framework.string.gsplit
-local pack = framework.util.pack
+local isHttpSuccess = framework.util.isHttpSuccess
 
 local params = framework.params
 
@@ -61,43 +60,35 @@ local function parseJson(body)
     return parsed 
 end
 
-function plugin:onParseValues(data)
+function plugin:onParseValues(data, extra)
   local metrics = {}
 
+  if not isHttpSuccess(extra.status_code) then
+    self:emitEvent('error', ('HTTP Request returned %d instead of OK. Please check NGINX Free stats endpoint.'):format(extra.status_code))
+    return
+  end
   local stats = parseJson(data)
   if stats then
-    local handled = stats['connections']['accepted'] - stats['connections']['dropped']
-    local requests = stats['requests']['total']
-    local reqs_per_connection = (handled > 0) and requests / handled or 0
-
-    metrics['NGINX_ACTIVE_CONNECTIONS'] = stats['connections']['active'] + stats['connections']['idle']
-    metrics['NGINX_WAITING'] = stats['connections']['idle']
-    metrics['NGINX_HANDLED'] = acc:accumulate('handled', handled)
-    metrics['NGINX_NOT_HANDLED'] = stats['connections']['dropped']
-    metrics['NGINX_REQUESTS'] = acc:accumulate('requests', requests)
-    metrics['NGINX_REQUESTS_PER_CONNECTION'] = reqs_per_connection
-    -- Enterprise customers have 'per zone' statistics
-    for zone_name, zone in pairs(stats.server_zones) do
-        local src = self.source .. '.' .. zone_name
-        table.insert(metrics, pack('NGINX_REQUESTS', acc:accumulate('requests_' .. zone_name, zone['requests']), nil, src))
-        table.insert(metrics, pack('NGINX_RESPONSES', acc:accumulate('responses_' .. zone_name, zone['responses']['total']), nil, src))
-        table.insert(metrics, pack('NGINX_TRAFFIC_SENT', acc:accumulate('traffic_sent_' .. zone_name, zone['sent']), nil, src))
-        table.insert(metrics, pack('NGINX_TRAFFIC_RECEIVED', acc:accumulate('traffic_received_' .. zone_name, zone['received']), nil, src))
-    end
+    self:emitEvent('info', 'You should install NGINX+ Plugin for non-free version of NGINX.')
   else 
     stats = parseText(data)
-    local handled = acc:accumulate('handled', stats.handled)
-    local requests = acc:accumulate('requests', stats.requests)
-    local reqs_per_connection = (handled > 0) and requests / handled or 0
+    local function prepare ()
+      local handled = acc:accumulate('handled', stats.handled)
+      local requests = acc:accumulate('requests', stats.requests)
+      local reqs_per_connection = (handled > 0) and requests / handled or 0
 
-    metrics['NGINX_ACTIVE_CONNECTIONS'] = stats.connections
-    metrics['NGINX_READING'] = stats.reading
-    metrics['NGINX_WRITING'] = stats.writing
-    metrics['NGINX_WAITING'] = stats.waiting
-    metrics['NGINX_HANDLED'] = handled
-    metrics['NGINX_NOT_HANDLED'] = stats.not_handled
-    metrics['NGINX_REQUESTS'] = requests
-    metrics['NGINX_REQUESTS_PER_CONNECTION'] = reqs_per_connection
+      metrics['NGINX_ACTIVE_CONNECTIONS'] = stats.connections
+      metrics['NGINX_READING'] = stats.reading
+      metrics['NGINX_WRITING'] = stats.writing
+      metrics['NGINX_WAITING'] = stats.waiting
+      metrics['NGINX_HANDLED'] = handled
+      metrics['NGINX_NOT_HANDLED'] = stats.not_handled
+      metrics['NGINX_REQUESTS'] = requests
+      metrics['NGINX_REQUESTS_PER_CONNECTION'] = reqs_per_connection
+    end
+    if not pcall(prepare) then
+      self:emitEvent('error', 'Can not parse metrics. Please check NGINX Free stats endpoint.')  
+    end
   end
 
   return metrics 
