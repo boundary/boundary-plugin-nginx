@@ -46,7 +46,7 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
     # activate stub_status module
     stub_status on;
 
-    # do not log graphdat polling the endpoint
+    # do not log the plugin polling the endpoint
     access_log off;
 
     # restrict access to local only
@@ -54,7 +54,7 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
     deny all;
 
     # optional, should be JSON by default
-          status_format json;
+    status_format json;
   }
      ```
 2. Ensure that a listen address is configured in /etc/nginx/conf.d/virtual.conf under the server {} block as well. An complete example that configures the `HttpStubStatusModule` is shown here:
@@ -66,7 +66,7 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
        # activate stub_status module
        stub_status on;
 
-       # do not log graphdat polling the endpoint
+       # do not log the plugin polling the endpoint
        access_log off;
 
        # restrict access to local only
