@@ -39,44 +39,8 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
 
 `nginx` requires configuration to provide URL path which will present the `nginx` statistics.
 
-1. Edit your default `/etc/nginx/conf.d/virtual.conf` file (or whatever `.conf` file you are using) and add the following configuration in your `server {}` block:
-
-     ```
-  location /nginx_status {
-    # activate stub_status module
-    stub_status on;
-
-    # do not log graphdat polling the endpoint
-    access_log off;
-
-    # restrict access to local only
-    allow 127.0.0.1;
-    deny all;
-
-    # optional, should be JSON by default
-          status_format json;
-  }
-     ```
-2. Ensure that a listen address is configured in /etc/nginx/conf.d/virtual.conf under the server {} block as well. An complete example that configures the `HttpStubStatusModule` is shown here:
-
-     ```
-     server {
-       listen       8000;
-       location /nginx_status {
-       # activate stub_status module
-       stub_status on;
-
-       # do not log graphdat polling the endpoint
-       access_log off;
-
-       # restrict access to local only
-       allow 127.0.0.1;
-       deny all;
-       }
-    }
-    ```
-
-4. Once you make the update, reload your nginx configuration:
+1. Add the nginx configuration file [boundary.conf](boundary.conf) to your `/etc/nginx/conf.d/`
+2. Once you make the configuration, reload your nginx configuration:
     ```bash
      $ sudo service nginx reload
     ```
