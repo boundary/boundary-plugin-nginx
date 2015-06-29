@@ -39,7 +39,7 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
 
 `nginx` requires configuration to provide URL path which will present the `nginx` statistics.
 
-1. Add the nginx configuration file [boundary.conf](boundary.conf) to your `/etc/nginx/conf.d/`
+1. Add the nginx configuration file [boundary.conf](boundary.conf) to your `/etc/nginx/conf.d/`. The contents of this file configures a _location_ required for the plugin to obtain measurements from `nginx`.
 2. Once you make the configuration, reload your nginx configuration:
     ```bash
      $ sudo service nginx reload
