@@ -33,53 +33,32 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
      ```bash
   $ nginx -V
     ```
+
 2. If the string `--with-http_stub_status_module` is in the output then the installed `nginx` includes the `HttpStubStatusModule`. If the string is not there, you will need to install a package that includes the module or compile a version that includes it. Information on installing and/or compiling `nginx` can found here: [http://nginx.org/en/docs/install.html](http://nginx.org/en/docs/install.html)
 
 #### `HttpStubStatusModule` Configuration
 
 `nginx` requires configuration to provide URL path which will present the `nginx` statistics.
 
-1. Edit your default `/etc/nginx/conf.d/virtual.conf` file (or whatever `.conf` file you are using) and add the following configuration in your `server {}` block:
+1. Add the nginx configuration file [boundary.conf](boundary.conf) to your `nginx` configuration directory which is typically `/etc/nginx` on Linux/Unix platforms, or `...\nginx\conf` on Windows platforms. The contents of this file configures a _location_ required for the plugin to obtain measurements from `nginx`.
 
-     ```
-  location /nginx_status {
-    # activate stub_status module
-    stub_status on;
+2. Include the `boundary.conf` in your `nginx` configuration file by adding the directive:
+```
+...
+        ##
+        # Boundary Meter Plugin Configuration
+        ##
+        include /etc/nginx/boundary.conf;
+}
+```
+in the `http` block.
 
-    # do not log the plugin polling the endpoint
-    access_log off;
-
-    # restrict access to local only
-    allow 127.0.0.1;
-    deny all;
-
-    # optional, should be JSON by default
-    status_format json;
-  }
-     ```
-2. Ensure that a listen address is configured in /etc/nginx/conf.d/virtual.conf under the server {} block as well. An complete example that configures the `HttpStubStatusModule` is shown here:
-
-     ```
-     server {
-       listen       8000;
-       location /nginx_status {
-       # activate stub_status module
-       stub_status on;
-
-       # do not log the plugin polling the endpoint
-       access_log off;
-
-       # restrict access to local only
-       allow 127.0.0.1;
-       deny all;
-       }
-    }
-    ```
-
-4. Once you make the update, reload your nginx configuration:
+3. Once you make the configuration, reload your nginx configuration:
     ```bash
      $ sudo service nginx reload
     ```
+
+NOTE: Alternatively, on Linux/Unix platforms you can place the `boundary.conf` file in `/etc/nginx/conf.d`
 
 #### Verify `HttpStubStatusModule` is Collecting Statistics
 
