@@ -48,7 +48,7 @@ To collect statistics from nginx, it needs to built with the [nginx HttpStubStat
         ##
         # Boundary Meter Plugin Configuration
         ##
-        include /etc/nginx/boundary.conf
+        include /etc/nginx/boundary.conf;
 }
 ```
 in the `http` block.
