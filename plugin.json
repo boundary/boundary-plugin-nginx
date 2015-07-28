@@ -33,22 +33,7 @@
         }
     ],
     "paramSchema" : [
-        {
-            "title" : "Poll Interval (ms)",
-            "name" : "pollInterval",
-            "description" : "The Poll Interval in milliseconds. Ex. 1000",
-            "type" : "integer",
-            "default" : 1000,
-            "required" : false
-        },
-        {
-            "title" : "Source",
-            "name" : "source",
-            "description" : "The Source to display in the legend for the nginx data.  It will default to the hostname of the server",
-            "type" : "string",
-	    "required" : false
-        },
-        {
+       {
             "title" : "Statistics URL",
             "name" : "url",
             "description" : "The URL endpoint of where the nginx statistics are hosted.",
@@ -66,6 +51,21 @@
             "name" : "password",
             "description" : "If the endpoint is password protected, what password we should use when calling it.",
             "type" : "password"
+        },
+        {
+            "title" : "Poll Interval (ms)",
+            "name" : "pollInterval",
+            "description" : "The Poll Interval in milliseconds to poll for metrics. Ex. 1000",
+            "type" : "integer",
+            "default" : 1000,
+            "required" : false
+        },
+        {
+            "title" : "Source",
+            "name" : "source",
+            "description" : "The Source to display in the legend for the nginx data.  It will default to the hostname of the server",
+            "type" : "string",
+	    "required" : false
         }
     ]
 }
