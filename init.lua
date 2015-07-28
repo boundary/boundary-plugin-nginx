@@ -13,7 +13,6 @@
 -- limitations under the License.
 
 local framework = require('framework')
-local json = require('json')
 local url = require('url')
 local Plugin  = framework.Plugin
 local WebRequestDataSource = framework.WebRequestDataSource
@@ -30,6 +29,7 @@ options.wait_for_end = true
 local ds = WebRequestDataSource:new(options)
 local acc = Accumulator:new()
 local plugin = Plugin:new(params, ds)
+local parseJson = framework.util.parseJson
 
 local function parseText(body)
     local stats = {}
@@ -52,12 +52,6 @@ local function parseText(body)
       end
     end
     return stats
-end
-
-local function parseJson(body)
-    local parsed
-    pcall(function () parsed = json.parse(body) end)
-    return parsed 
 end
 
 function plugin:onParseValues(data, extra)
