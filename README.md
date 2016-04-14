@@ -1,4 +1,4 @@
-# Boundary Nginx Free Plugin
+# TrueSight Pulse Nginx Free Plugin
 
 A Boundary plugin that collects metrics from an Nginx Free instance. This plugin is not intended for the Nginx Plus edition as other metrics are relevant and available there.
 
