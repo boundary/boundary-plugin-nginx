@@ -1,10 +1,10 @@
 {
-    "name": "Boundary NGINX Free plugin",
+    "name": "TrueSight Pulse NGINX Free plugin",
     "version" : "0.9.1",
     "meterVersionRequired" : "4.2.0-611",
     "unsupportedPlatforms" : [ ],
     "tags": "nginx-free",
-    "description": "Boundary Nginx Plugin - Displays NGINX Free metrics",
+    "description": "TrueSight Pulse Nginx Plugin - Displays NGINX Free metrics",
     "icon" : "icon.png",
     "command" : "node index.js",
     "command_lua" : "boundary-meter init.lua",
