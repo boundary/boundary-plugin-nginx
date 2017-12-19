@@ -1,6 +1,6 @@
 {
     "name": "TrueSight Pulse NGINX Free plugin",
-    "version" : "0.9.2",
+    "version" : "0.9.3",
     "meterVersionRequired" : "4.2.0-611",
     "unsupportedPlatforms" : [ ],
     "tags": "nginx-free",
@@ -11,7 +11,7 @@
     "postExtract" : "npm install",
     "postExtract_lua" : "",
     "ignore" : "node_modules",
-
+    "secure": true,
     "metrics" : [
         "NGINX_ACTIVE_CONNECTIONS",
         "NGINX_READING",
